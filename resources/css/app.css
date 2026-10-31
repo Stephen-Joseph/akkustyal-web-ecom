@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source '../../resources/views/**/*.blade.php';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Oswald', sans-serif;
+    --font-script: 'Caveat', cursive;
+
+    --animate-marquee: marquee 24s linear infinite;
+    --animate-marquee-reverse: marqueeReverse 26s linear infinite;
+
+    @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-50%); }
+    }
+    @keyframes marqueeReverse {
+        0% { transform: translateX(-50%); }
+        100% { transform: translateX(0%); }
+    }
+}
