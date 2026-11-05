@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\HeroSectionController;
 use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\CartController;
@@ -101,13 +102,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Protected Admin Pages
     Route::middleware('auth:admin')->group(function () {
-        Route::view('/dashboard', 'admin.dashboard')
+        Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])
             ->name('dashboard');
 
         Route::post('/logout', [AdminAuthController::class, 'logout'])
             ->name('logout');
 
         Route::middleware('admin.role')->group(function () {
+            Route::view('/settings', 'admin.settings.index')
+                ->name('settings');
+
             Route::get('/hero', [HeroSectionController::class, 'edit'])
                 ->name('hero.edit');
 

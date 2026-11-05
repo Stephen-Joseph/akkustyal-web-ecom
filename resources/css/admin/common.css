@@ -1,0 +1,116 @@
+/* ==================== COLOR PALETTE (ORIGINAL DESIGN) ==================== */
+:root {
+  --bg-canvas: #EDEAE4;
+  --bg-card: #F7F6F3;
+  --bg-pill-bar: #E5E2DC;
+  --bg-subtle: #ECEAE4;
+  --bg-subtle-hover: #E0DDD6;
+
+  /* Coral / Orange Brand Accents */
+  --primary: #F47E52;
+  --primary-soft: #E98864;
+  --primary-hover: #E06D42;
+  --primary-text: #FFFFFF;
+
+  /* Typography Colors */
+  --text-main: #141414;
+  --text-secondary: #4E4E4E;
+  --text-muted: #7C7A76;
+
+  /* Borders & Shadows */
+  --border-color: #E2DFD9;
+  --shadow-card: 0 2px 10px rgba(20, 20, 20, 0.03), 0 1px 2px rgba(20, 20, 20, 0.02);
+  --shadow-float: 0 12px 26px rgba(20, 20, 20, 0.12), 0 4px 10px rgba(20, 20, 20, 0.06);
+
+  /* Chart & Status Accents */
+  --bar-inactive-body: #DCDAD5;
+  --bar-inactive-cap: #D0CECA;
+  --badge-purple-bg: #EFEBF9;
+  --badge-purple-text: #9474DF;
+  --badge-green-bg: #DDF0E4;
+  --badge-green-text: #3B9B64;
+  --shopify-bg: #E6EFE3;
+  --shopify-green: #5E943A;
+  --map-blue: #3563F6;
+  --map-land: #DAD7D1;
+
+  /* Feedback */
+  --error-bg: #FDECEA;
+  --error-text: #C8402F;
+}
+
+html.dark {
+  --bg-canvas: #111113;
+  --bg-card: #1A1A1D;
+  --bg-pill-bar: #232327;
+  --bg-subtle: #26262B;
+  --bg-subtle-hover: #323238;
+
+  --primary: #F47E52;
+  --primary-soft: #E98864;
+  --primary-hover: #F7906A;
+  --primary-text: #FFFFFF;
+
+  --text-main: #F5F5F7;
+  --text-secondary: #B8B8BF;
+  --text-muted: #85858E;
+
+  --border-color: #2A2A30;
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-float: 0 14px 30px rgba(0, 0, 0, 0.6);
+
+  --bar-inactive-body: #2C2C32;
+  --bar-inactive-cap: #3A3A42;
+  --badge-purple-bg: rgba(148, 116, 223, 0.18);
+  --badge-purple-text: #B59BF0;
+  --badge-green-bg: rgba(59, 155, 100, 0.18);
+  --badge-green-text: #5CD18E;
+  --shopify-bg: rgba(94, 148, 58, 0.2);
+  --shopify-green: #79B851;
+  --map-blue: #4672FF;
+  --map-land: #2E2E35;
+
+  --error-bg: rgba(200, 64, 47, 0.18);
+  --error-text: #F28B7D;
+}
+
+/* ==================== RESET & BASE ==================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button, select {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

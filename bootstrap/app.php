@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\EnsureAdminRole;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin.role' => EnsureAdminRole::class,
         ]);
+        $middleware->redirectGuestsTo(
+            fn (Request $request): string => $request->is('admin', 'admin/*')
+                ? route('admin.login')
+                : route('pages.auth.login'),
+        );
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);
