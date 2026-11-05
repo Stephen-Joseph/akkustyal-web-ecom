@@ -14,7 +14,7 @@
           <div class="mt-7">
             <button data-policy="instagram" class="policy-link-btn text-sm font-semibold inline-flex items-center gap-2 hover:opacity-60 transition">
               <span>Instagram</span>
-              <span class="text-xs text-neutral-400">@akkustyal ↗</span>
+              <span class="text-xs text-neutral-400">@akkustyal</span>
             </button>
           </div>
         </div>
@@ -57,16 +57,11 @@
       <!-- Bottom Oversized Brand Mark -->
       <div class="pt-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
         <div class="flex items-center gap-4">
-          <span class="font-display text-5xl sm:text-7xl font-bold tracking-tight uppercase leading-none">AKKU<sup class="text-sm sm:text-lg font-sans font-bold ml-1">TM</sup></span>
-          <svg class="w-12 h-12 sm:w-16 sm:h-16" viewBox="0 0 44 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 4L38 13V27L22 36L6 27V13Z" />
-            <path d="M14 27L22 11L30 27" />
-            <path d="M17 21H27" />
-          </svg>
+          <span class="font-display text-5xl sm:text-7xl font-bold tracking-tight uppercase leading-none">AkkuStyle</span>
         </div>
         <div class="text-xs text-neutral-500 dark:text-neutral-400 space-y-1">
-          <p>© 2026 Akku — Crafted by Akku Studio. All rights reserved.</p>
-          <p>Based in India • Monochrome Adaptive Storefront</p>
+          <p>© 2026 Akku Style — Crafted by CodeLuxeStudio. All rights reserved.</p>
+          <p>Designed for the modern individual who values quality and style.</p>
         </div>
       </div>
     </div>

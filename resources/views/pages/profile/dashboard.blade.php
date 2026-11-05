@@ -13,7 +13,7 @@
     <p>Email: {{ $customer->email }}</p>
     <p>Phone: {{ $customer->phone ?? 'Not added' }}</p>
 
-    <form method="POST" action="{{ route('customer.logout') }}">
+    <form method="POST" action="{{ route('pages.auth.logout') }}">
         @csrf
         <button type="submit">Logout</button>
     </form>

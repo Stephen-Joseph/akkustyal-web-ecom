@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\CustomerAuthController;
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Customer\FavouriteController;
+use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', function () {
     return view('index');
@@ -28,7 +31,7 @@ Route::post('/login', [CustomerAuthController::class, 'login'])
 
 Route::post('/logout', [CustomerAuthController::class, 'logout'])
     ->middleware('auth:customer')
-    ->name('customer.logout');
+    ->name('pages.auth.logout');
 
 // Authenticated customer routes
 Route::middleware('auth:customer')->group(function () {
@@ -38,6 +41,29 @@ Route::middleware('auth:customer')->group(function () {
     Route::post('/logout', [CustomerAuthController::class, 'logout'])
         ->name('logout');
 });
+
+// Favorite routes
+Route::middleware('auth:customer')->group(function () {
+    Route::get('/favorites', [FavouriteController::class, 'index'])
+        ->name('pages.fav.index');
+    Route::post('/favorites', [FavouriteController::class, 'store'])
+        ->name('pages.fav.store');
+    Route::delete('/favorites/{id}', [FavouriteController::class, 'destroy'])
+        ->name('pages.fav.destroy');
+});
+
+// Cart routes
+Route::middleware('auth:customer')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])
+        ->name('pages.cart.index');
+    Route::post('/cart', [CartController::class, 'store'])
+        ->name('pages.cart.store');
+    Route::delete('/cart/{id}', [CartController::class, 'destroy'])
+        ->name('pages.cart.destroy');
+});
+// Product routes
+Route::get('/products', [ProductController::class, 'index'])
+    ->name('pages.products.view');
 
 
 // Admin routes

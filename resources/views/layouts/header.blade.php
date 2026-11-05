@@ -22,21 +22,14 @@
           </svg>
         </button>
         <nav class="hidden md:flex items-center gap-6 text-xs font-semibold uppercase tracking-[0.14em]">
-          <button data-nav-section="showcaseSection" class="nav-scroll-btn hover:opacity-60 transition">Carousel</button>
-          <button data-nav-section="catalogSection" class="nav-scroll-btn hover:opacity-60 transition">Collection</button>
-          <button data-nav-section="manifestoSection" class="nav-scroll-btn hover:opacity-60 transition">Manifesto</button>
-          <button data-nav-section="reviewsSection" class="nav-scroll-btn hover:opacity-60 transition">Reviews</button>
+          <button data-nav-section="showcaseSection" class="nav-scroll-btn hover:opacity-60 transition">Home</button>
         </nav>
       </div>
 
       <!-- Center: Akku Emblem + Brand Wordmark -->
       <button id="brandHomeBtn" class="flex items-center gap-2.5 group focus:outline-none" aria-label="Go to top">
-        <svg class="w-8 h-8 transition-transform duration-300 group-hover:scale-105" viewBox="0 0 44 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 4L38 13V27L22 36L6 27V13Z" />
-          <path d="M14 27L22 11L30 27" />
-          <path d="M17 21H27" />
-        </svg>
-        <span class="font-display text-2xl sm:text-[26px] font-bold tracking-tight uppercase">AKKU<sup class="text-[10px] font-sans font-semibold ml-0.5">TM</sup></span>
+        
+        <span class="font-display text-2xl sm:text-[26px] font-bold tracking-tight uppercase">AkkuStyle</span>
       </button>
 
       <!-- Right: Theme Switcher, Search, Wishlist, Bag -->
