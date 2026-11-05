@@ -1,18 +1,20 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Customer\CustomerAuthController;
 use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Customer\FavouriteController;
+use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\Customer\CustomerAuthController;
+use App\Http\Controllers\Customer\FavouriteController;
+use App\Http\Controllers\Customer\OrderController;
+use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('index');
 });
 
 // Customer authentication routes
-
 Route::get('/register', [CustomerAuthController::class, 'showRegister'])
     ->middleware('guest:customer')
     ->name('pages.auth.register');
@@ -40,35 +42,55 @@ Route::middleware('auth:customer')->group(function () {
 
     Route::post('/logout', [CustomerAuthController::class, 'logout'])
         ->name('logout');
-});
 
-// Favorite routes
-Route::middleware('auth:customer')->group(function () {
+    // Favorites / Wishlist
     Route::get('/favorites', [FavouriteController::class, 'index'])
         ->name('pages.fav.index');
     Route::post('/favorites', [FavouriteController::class, 'store'])
         ->name('pages.fav.store');
     Route::delete('/favorites/{id}', [FavouriteController::class, 'destroy'])
         ->name('pages.fav.destroy');
-});
 
-// Cart routes
-Route::middleware('auth:customer')->group(function () {
+    // Cart
     Route::get('/cart', [CartController::class, 'index'])
         ->name('pages.cart.index');
     Route::post('/cart', [CartController::class, 'store'])
         ->name('pages.cart.store');
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])
         ->name('pages.cart.destroy');
+
+    // Addresses
+    Route::get('/account/addresses', [AddressController::class, 'index'])
+        ->name('customer.addresses.index');
+    Route::post('/account/addresses', [AddressController::class, 'store'])
+        ->name('customer.addresses.store');
+    Route::delete('/account/addresses/{address}', [AddressController::class, 'destroy'])
+        ->name('customer.addresses.destroy');
+
+    // Orders
+    Route::get('/account/orders', [OrderController::class, 'index'])
+        ->name('customer.orders.index');
+    Route::post('/account/orders', [OrderController::class, 'store'])
+        ->name('customer.orders.store');
+    Route::get('/account/orders/{order}', [OrderController::class, 'show'])
+        ->name('customer.orders.show');
+
+    // Reviews
+    Route::post('/reviews', [ReviewController::class, 'store'])
+        ->name('customer.reviews.store');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
+        ->name('customer.reviews.destroy');
 });
+
 // Product routes
 Route::get('/products', [ProductController::class, 'index'])
     ->name('pages.products.view');
 
+Route::get('/products/{slug}', [ProductController::class, 'show'])
+    ->name('pages.products.show');
 
 // Admin routes
 Route::prefix('admin')->name('admin.')->group(function () {
-
     // Admin Login
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])
         ->name('login');
@@ -79,13 +101,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Protected Admin Pages
     Route::middleware('auth:admin')->group(function () {
-
         Route::view('/dashboard', 'admin.dashboard')
             ->name('dashboard');
 
         Route::post('/logout', [AdminAuthController::class, 'logout'])
             ->name('logout');
-
     });
-
 });
