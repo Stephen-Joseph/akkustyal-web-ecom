@@ -37,7 +37,7 @@ class CustomerAuthController extends Controller
         Auth::guard('customer')->login($customer);
         $request->session()->regenerate();
 
-        return redirect()->route('index')->with('success', 'Registration successful! You are now logged in.');
+        //return redirect()->route('index')->with('success', 'Registration successful! You are now logged in.');
     }
 
     public function showLogin()

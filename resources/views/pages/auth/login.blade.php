@@ -21,6 +21,12 @@
         <p style="color: green;">{{ session('success') }}</p>
     @endif
 
+    <p style="color: red;">
+        @if (session('error'))
+            {{ session('error') }}
+        @endif
+    </p>
+
     <form method="POST" action="{{ route('pages.auth.login.submit') }}">
         @csrf
 
@@ -35,7 +41,7 @@
     </form>
 
     <p>New customer?
-        <a href="{{ route('customer.register') }}">Create account</a>
+        <a href="{{ route('pages.auth.register') }}">Create account</a>
     </p>
 </body>
 </html>
