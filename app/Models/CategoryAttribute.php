@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class CategoryAttribute extends Pivot
 {
+    public const CREATED_AT = null;
+    public const UPDATED_AT = null;
+
     /** @var string */
     protected $table = 'category_attributes';
 
@@ -36,4 +39,14 @@ class CategoryAttribute extends Pivot
         'is_required_in_category' => 'boolean',
         'sort_order' => 'integer',
     ];
+
+    public function getCreatedAtColumn(): ?string
+    {
+        return null;
+    }
+
+    public function getUpdatedAtColumn(): ?string
+    {
+        return null;
+    }
 }
