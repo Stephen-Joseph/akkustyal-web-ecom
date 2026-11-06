@@ -16,8 +16,10 @@ class HomeController extends Controller
             ->with([
                 'brand',
                 'categories',
+                'images',
                 'variants.prices',
                 'variants.inventoryLevels',
+                'variants.images',
             ])
             ->active()
             ->latest()
@@ -50,9 +52,11 @@ class HomeController extends Controller
 
             $color = $firstVariant?->variant_options['color'] ?? ($product->base_attributes['fabric'] ?? 'Standard');
 
-            $images = ! empty($firstVariant?->media_gallery)
-                ? $firstVariant->media_gallery
-                : [$fallbackImages[$index % count($fallbackImages)]];
+            $images = $product->images->isNotEmpty()
+                ? $product->images->pluck('cdn_url')->all()
+                : (! empty($firstVariant?->media_gallery)
+                    ? array_column($firstVariant->media_gallery, 'url')
+                    : [$fallbackImages[$index % count($fallbackImages)]]);
 
             $badge = null;
             if ($msrpPrice && $msrpPrice > $retailPrice) {

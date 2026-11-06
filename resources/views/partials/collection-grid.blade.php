@@ -53,7 +53,7 @@
               'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80',
               'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80',
           ];
-          $imageSrc = !empty($firstVariant?->media_gallery) ? $firstVariant->media_gallery[0] : $fallbacks[$index % count($fallbacks)];
+          $imageSrc = $product->primary_image ?? (!empty($firstVariant?->media_gallery) ? ($firstVariant->media_gallery[0]['url'] ?? $firstVariant->media_gallery[0]) : null) ?? $fallbacks[$index % count($fallbacks)];
 
           $badge = null;
           if ($msrpPrice && $msrpPrice > $retailPrice) {
