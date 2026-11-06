@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<ProductVariant>
@@ -13,28 +14,47 @@ class ProductVariantFactory extends Factory
 {
     public function definition(): array
     {
-        $price = $this->faker->randomFloat(2, 10, 500);
+        $sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+        $colors = ['Red', 'Blue', 'Green', 'Black', 'White', 'Navy', 'Beige'];
+        $size = $this->faker->randomElement($sizes);
+        $color = $this->faker->randomElement($colors);
 
         return [
             'product_id' => Product::factory(),
-            'sku' => strtoupper($this->faker->unique()->bothify('SKU-####-??')),
-            'price' => $price,
-            'compare_at_price' => $this->faker->optional(0.4)->randomFloat(2, $price + 5, $price + 100),
-            'stock_quantity' => $this->faker->numberBetween(0, 200),
-            'attributes' => [
-                'size' => $this->faker->randomElement(['XS', 'S', 'M', 'L', 'XL', 'XXL']),
-                'color' => $this->faker->colorName(),
-            ],
+            'sku' => strtoupper(Str::random(8)),
+            'barcode' => $this->faker->optional()->ean13(),
+            'name' => "{$size} / {$color}",
+            'is_default' => false,
+            'is_active' => true,
+            'track_inventory' => true,
+            'weight_grams' => $this->faker->numberBetween(100, 2000),
+            'length_mm' => $this->faker->numberBetween(100, 600),
+            'width_mm' => $this->faker->numberBetween(100, 400),
+            'height_mm' => $this->faker->numberBetween(10, 100),
+            'variant_options' => ['size' => $size, 'color' => $color],
+            'technical_specs' => [],
+            'media_gallery' => [],
+            'sort_order' => 0,
         ];
     }
 
     /**
-     * Mark variant as out of stock.
+     * Mark as the default variant for a product.
      */
-    public function outOfStock(): static
+    public function default(): static
     {
         return $this->state(fn (array $attributes) => [
-            'stock_quantity' => 0,
+            'is_default' => true,
+        ]);
+    }
+
+    /**
+     * Mark the variant as inactive.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
         ]);
     }
 }

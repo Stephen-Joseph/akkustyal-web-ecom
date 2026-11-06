@@ -10,10 +10,10 @@ class ProductController extends Controller
 {
     public function index(Request $request): View
     {
-        $products = Product::with(['category', 'images', 'variants'])
+        $products = Product::with(['categories', 'brand', 'variants.prices', 'variants.inventoryLevels'])
             ->active()
             ->when($request->category, fn ($q) => $q->whereHas(
-                'category',
+                'categories',
                 fn ($c) => $c->where('slug', $request->category)
             ))
             ->when($request->search, fn ($q) => $q->where(
@@ -29,22 +29,28 @@ class ProductController extends Controller
     public function show(string $slug): View
     {
         $product = Product::with([
-            'category',
-            'images',
-            'variants',
+            'categories',
+            'brand',
+            'variants.prices',
+            'variants.inventoryLevels',
             'reviews.customer',
         ])
             ->active()
             ->where('slug', $slug)
             ->firstOrFail();
 
-        $relatedProducts = Product::with(['images', 'variants'])
+        $primaryCategoryId = $product->categories->first()?->id;
+
+        $relatedProducts = Product::with(['categories', 'variants.prices'])
             ->active()
-            ->where('category_id', $product->category_id)
+            ->when(
+                $primaryCategoryId,
+                fn ($q) => $q->whereHas('categories', fn ($c) => $c->where('categories.id', $primaryCategoryId))
+            )
             ->where('id', '!=', $product->id)
             ->limit(4)
             ->get();
 
-        return view('pages.product.view', compact('product', 'relatedProducts'));
+        return view('pages.products.view', compact('product', 'relatedProducts'));
     }
 }
