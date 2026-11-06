@@ -9,6 +9,10 @@ return new class extends Migration
 
     public function up(): void
     {
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
         DB::statement('CREATE EXTENSION IF NOT EXISTS "pgcrypto"');
         DB::statement('CREATE EXTENSION IF NOT EXISTS "ltree"');
         DB::statement('CREATE EXTENSION IF NOT EXISTS "btree_gist"');
@@ -21,6 +25,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
         DB::statement('DROP TYPE IF EXISTS attribute_type_enum');
         DB::statement('DROP TYPE IF EXISTS product_relation_enum');
         DB::statement('DROP TYPE IF EXISTS product_type_enum');

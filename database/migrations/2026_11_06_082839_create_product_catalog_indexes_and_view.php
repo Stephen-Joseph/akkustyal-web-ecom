@@ -9,6 +9,10 @@ return new class extends Migration
 
     public function up(): void
     {
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
         // GiST index for ltree path on categories
         DB::statement('CREATE INDEX idx_categories_path_gist ON categories USING GIST (path)');
 
@@ -81,6 +85,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
         DB::statement('DROP VIEW IF EXISTS vw_active_variant_pricing');
 
         $indexes = [

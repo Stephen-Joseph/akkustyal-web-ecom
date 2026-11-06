@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class ProductRelationship extends Pivot
 {
+    public const UPDATED_AT = null;
+
     /** @var string */
     protected $table = 'product_relationships';
 
@@ -41,4 +43,12 @@ class ProductRelationship extends Pivot
         'sort_order' => 'integer',
         'is_bidirectional' => 'boolean',
     ];
+
+    /**
+     * Get the name of the "updated at" column (null since table has only created_at).
+     */
+    public function getUpdatedAtColumn(): ?string
+    {
+        return null;
+    }
 }

@@ -62,7 +62,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id')
             ->using(CategoryProduct::class)
-            ->withPivot(['is_primary', 'sort_order', 'created_at'])
+            ->withPivot(['is_primary', 'sort_order'])
             ->orderByPivot('sort_order');
     }
 
