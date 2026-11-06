@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/css/admin/dashboard.css',
                 'resources/css/admin/login.css',
                 'resources/css/admin/settings.css',
+                'resources/css/admin/catalog.css',
                 'resources/js/admin/common.js',
                 'resources/js/admin/layout.js',
                 'resources/js/admin/dashboard.js',

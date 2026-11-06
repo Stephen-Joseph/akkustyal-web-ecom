@@ -53,6 +53,50 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class)->orderBy('sort_order');
     }
 
+    /**
+     * Master media assets connected via the product_images pivot table.
+     */
+    public function images(): BelongsToMany
+    {
+        return $this->belongsToMany(Image::class, 'product_images', 'product_id', 'image_id')
+            ->using(ProductImage::class)
+            ->withPivot([
+                'id',
+                'variant_id',
+                'image_name',
+                'alt_text',
+                'caption',
+                'image_role',
+                'option_match',
+                'is_primary',
+                'is_active',
+                'sort_order',
+            ])
+            ->withTimestamps()
+            ->orderByPivot('is_primary', 'desc')
+            ->orderByPivot('sort_order', 'asc');
+    }
+
+    /**
+     * Direct product_images junction entries.
+     */
+    public function productImages(): HasMany
+    {
+        return $this->hasMany(ProductImage::class, 'product_id')
+            ->orderBy('is_primary', 'desc')
+            ->orderBy('sort_order', 'asc');
+    }
+
+    /**
+     * The primary hero image for the base product.
+     */
+    public function primaryProductImage(): BelongsToMany
+    {
+        return $this->images()
+            ->wherePivot('is_primary', true)
+            ->wherePivotNull('variant_id');
+    }
+
     public function defaultVariant(): HasMany
     {
         return $this->hasMany(ProductVariant::class)->where('is_default', true)->withoutTrashed();
@@ -148,17 +192,20 @@ class Product extends Model
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the first active variant's first media_gallery image URL, or null.
+     * Returns the primary image URL from the DAM images pivot, or first available image.
      */
     public function getPrimaryImageAttribute(): ?string
     {
-        $gallery = $this->variants->first()?->media_gallery;
-
-        if (empty($gallery)) {
-            return null;
+        $primary = $this->images->first(fn ($img) => (bool) ($img->pivot?->is_primary && is_null($img->pivot?->variant_id)));
+        if ($primary) {
+            return $primary->cdn_url;
         }
 
-        return is_array($gallery) ? ($gallery[0]['url'] ?? null) : null;
+        if ($this->images->isNotEmpty()) {
+            return $this->images->first()?->cdn_url;
+        }
+
+        return $this->variants->first()?->primary_image;
     }
 
     /**

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\CatalogHubController;
 use App\Http\Controllers\Admin\HeroSectionController;
 use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\CartController;
@@ -104,6 +106,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth:admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])
             ->name('dashboard');
+
+        // Products & Categories Hub
+        Route::get('/catalog', [CatalogHubController::class, 'index'])
+            ->name('catalog.index');
+
+        // Products CRUD
+        Route::resource('products', AdminProductController::class);
 
         Route::post('/logout', [AdminAuthController::class, 'logout'])
             ->name('logout');

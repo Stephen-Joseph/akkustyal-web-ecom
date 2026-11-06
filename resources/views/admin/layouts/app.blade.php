@@ -18,6 +18,7 @@
     <!-- Mobile Navigation Drawer -->
     <nav id="mobileNav" class="mobile-nav" aria-label="Mobile Navigation">
       <a href="{{ route('admin.dashboard') }}" @class(['nav-pill', 'active' => request()->routeIs('admin.dashboard')])>Dashboard</a>
+      <a href="{{ route('admin.catalog.index') }}" @class(['nav-pill', 'active' => request()->routeIs('admin.catalog.*', 'admin.products.*')])>Products & Categories</a>
       @if (auth('admin')->user()?->role === 'admin')
         <a href="{{ route('admin.settings') }}" @class(['nav-pill', 'active' => request()->routeIs('admin.settings', 'admin.hero.*')])>Settings</a>
       @endif

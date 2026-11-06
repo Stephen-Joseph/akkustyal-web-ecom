@@ -429,8 +429,11 @@
   <!-- APPLICATION SCRIPT -->
   <script>
     (function () {
-      // 1. PRODUCT CATALOG (Uses inlined generated studio images)
-      const PRODUCTS = [
+      // 1. PRODUCT CATALOG (Injected from Database with fallback)
+      const DB_PRODUCTS = @json($productsJson ?? []);
+      const DB_CATEGORIES = @json($categoriesList ?? []);
+
+      const PRODUCTS = (DB_PRODUCTS && DB_PRODUCTS.length > 0) ? DB_PRODUCTS : [
         {
           id: 'old-skool-raglan',
           title: 'AkkuStyle',
@@ -452,7 +455,7 @@
         }
       ];
 
-      const CATEGORIES = ['All Products', 'T-shirt', 'Compression Fit', 'Gym Vest', 'Track Pant'];
+      const CATEGORIES = (DB_CATEGORIES && DB_CATEGORIES.length > 0) ? DB_CATEGORIES : ['All Products', 'T-shirt', 'Compression Fit', 'Gym Vest', 'Track Pant'];
 
       // 2. APPLICATION STATE
       const state = {
@@ -461,22 +464,17 @@
         spotlightCategory: 'All Products',
         spotlightIndex: 0,
         spotlightThumbIndex: 0,
-        selectedSizes: {
-          'old-skool-raglan': 'S'
-        },
+        selectedSizes: PRODUCTS.reduce((acc, p) => {
+          acc[p.id] = (p.sizes && p.sizes.length) ? p.sizes[0] : 'M';
+          return acc;
+        }, {}),
         catalogCategory: 'All Products',
         searchQuery: '',
         sortBy: 'featured',
-        wishlist: ['old-skool-raglan'],
-        recentlyViewedId: 'core-sweats-iron',
-        cart: [
-          {
-            productId: 'old-skool-raglan',
-            size: 'S',
-            qty: 1
-          }
-        ],
-        activePdpId: 'core-sweats-iron',
+        wishlist: [],
+        recentlyViewedId: PRODUCTS[0]?.id || null,
+        cart: [],
+        activePdpId: PRODUCTS[0]?.id || null,
         activePdpThumb: 0
       };
 

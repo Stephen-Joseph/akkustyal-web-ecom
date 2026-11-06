@@ -30,7 +30,6 @@ class ProductVariant extends Model
         'height_mm',
         'variant_options',
         'technical_specs',
-        'media_gallery',
         'sort_order',
     ];
 
@@ -45,7 +44,6 @@ class ProductVariant extends Model
         'height_mm' => 'integer',
         'variant_options' => 'array',
         'technical_specs' => 'array',
-        'media_gallery' => 'array',
         'sort_order' => 'integer',
     ];
 
@@ -56,6 +54,40 @@ class ProductVariant extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Master media assets connected via the product_images pivot table.
+     */
+    public function images(): BelongsToMany
+    {
+        return $this->belongsToMany(Image::class, 'product_images', 'variant_id', 'image_id')
+            ->using(ProductImage::class)
+            ->withPivot([
+                'id',
+                'product_id',
+                'image_name',
+                'alt_text',
+                'caption',
+                'image_role',
+                'option_match',
+                'is_primary',
+                'is_active',
+                'sort_order',
+            ])
+            ->withTimestamps()
+            ->orderByPivot('is_primary', 'desc')
+            ->orderByPivot('sort_order', 'asc');
+    }
+
+    /**
+     * Direct product_images junction entries for this variant.
+     */
+    public function productImages(): HasMany
+    {
+        return $this->hasMany(ProductImage::class, 'variant_id')
+            ->orderBy('is_primary', 'desc')
+            ->orderBy('sort_order', 'asc');
     }
 
     public function prices(): HasMany
