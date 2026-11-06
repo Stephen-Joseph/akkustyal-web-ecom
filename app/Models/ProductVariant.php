@@ -199,16 +199,32 @@ class ProductVariant extends Model
     }
 
     /**
-     * Returns the first media gallery image URL, or null.
+     * Returns the primary image URL for this variant, or fallback to first image, or parent product image.
      */
     public function getPrimaryImageAttribute(): ?string
     {
-        $gallery = $this->media_gallery;
-
-        if (empty($gallery)) {
-            return null;
+        $primary = $this->images->first(fn ($img) => (bool) $img->pivot?->is_primary);
+        if ($primary) {
+            return $primary->cdn_url;
         }
 
-        return $gallery[0]['url'] ?? null;
+        if ($this->images->isNotEmpty()) {
+            return $this->images->first()?->cdn_url;
+        }
+
+        return $this->product?->primary_image;
+    }
+
+    /**
+     * Backwards-compatible accessor for media_gallery format.
+     *
+     * @return list<array{url: string, name: string}>
+     */
+    public function getMediaGalleryAttribute(): array
+    {
+        return $this->images->map(fn ($img) => [
+            'url' => $img->cdn_url,
+            'name' => $img->pivot?->image_name ?? $img->image_name,
+        ])->all();
     }
 }
