@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Product\CreateProductAction;
 use App\Actions\Product\UpdateProductAction;
+use App\Actions\Product\UploadProductImageAction;
+use App\Enums\ImageRole;
 use App\Enums\ProductStatus;
 use App\Enums\ProductType;
 use App\Http\Controllers\Controller;
@@ -27,7 +31,13 @@ class AdminProductController extends Controller
         $statusEnum = $statusInput ? ProductStatus::tryFrom($statusInput) : null;
 
         $products = Product::query()
-            ->with(['brand', 'categories', 'variants.prices'])
+            ->with([
+                'brand',
+                'categories',
+                'images',
+                'variants.prices',
+                'variants.images',
+            ])
             ->when($statusEnum, fn ($q) => $q->where('status', $statusEnum))
             ->when($request->query('brand_id'), fn ($q, $brandId) => $q->where('brand_id', $brandId))
             ->when($request->query('search'), function ($q, $search) {
@@ -55,15 +65,19 @@ class AdminProductController extends Controller
         $categories = Category::where('is_active', true)->orderBy('name')->get();
         $statuses = ProductStatus::cases();
         $types = ProductType::cases();
+        $imageRoles = ImageRole::cases();
 
-        return view('admin.products.create', compact('brands', 'categories', 'statuses', 'types'));
+        return view('admin.products.create', compact('brands', 'categories', 'statuses', 'types', 'imageRoles'));
     }
 
     /**
      * Store a newly created product.
      */
-    public function store(Request $request, CreateProductAction $createProductAction): RedirectResponse
-    {
+    public function store(
+        Request $request,
+        CreateProductAction $createProductAction,
+        UploadProductImageAction $uploadProductImageAction
+    ): RedirectResponse {
         if (! $request->filled('slug') && $request->filled('name')) {
             $request->merge(['slug' => Str::slug($request->string('name')->value())]);
         }
@@ -82,6 +96,9 @@ class AdminProductController extends Controller
             'published_at' => ['nullable', 'date'],
             'fabric' => ['nullable', 'string', 'max:100'],
             'occasion' => ['nullable', 'string', 'max:100'],
+            'primary_image_file' => ['nullable', 'file', 'image', 'mimes:jpeg,png,webp,gif,svg,avif', 'max:10240'],
+            'primary_image_url' => ['nullable', 'url', 'max:2000'],
+            'primary_image_alt' => ['nullable', 'string', 'max:255'],
         ]);
 
         $baseAttributes = [];
@@ -95,24 +112,44 @@ class AdminProductController extends Controller
 
         $product = $createProductAction->execute($validated);
 
+        // Attach initial primary image if provided
+        if ($request->hasFile('primary_image_file') || $request->filled('primary_image_url')) {
+            $uploadProductImageAction->execute(
+                $product,
+                [
+                    'image_role' => ImageRole::Thumbnail,
+                    'alt_text' => $request->input('primary_image_alt') ?: $product->name,
+                    'cdn_url' => $request->input('primary_image_url'),
+                    'is_primary' => true,
+                    'sort_order' => 1,
+                ],
+                $request->file('primary_image_file')
+            );
+        }
+
         return redirect()
             ->route('admin.products.show', $product)
             ->with('success', "Product \"{$product->name}\" created successfully.");
     }
 
     /**
-     * Display a single product's full view details (variants, prices, attributes).
+     * Display a single product's full view details (variants, prices, attributes, images).
      */
     public function show(Product $product): View
     {
         $product->load([
             'brand',
             'categories',
+            'productImages.image',
+            'productImages.variant',
             'variants.prices',
             'variants.inventoryLevels.warehouse',
+            'variants.images',
         ]);
 
-        return view('admin.products.show', compact('product'));
+        $imageRoles = ImageRole::cases();
+
+        return view('admin.products.show', compact('product', 'imageRoles'));
     }
 
     /**
@@ -120,7 +157,12 @@ class AdminProductController extends Controller
      */
     public function edit(Product $product): View
     {
-        $product->load(['brand', 'categories']);
+        $product->load([
+            'brand',
+            'categories',
+            'productImages.image',
+        ]);
+
         $brands = Brand::where('is_active', true)->orderBy('name')->get();
         $categories = Category::where('is_active', true)->orderBy('name')->get();
         $statuses = ProductStatus::cases();
@@ -132,8 +174,12 @@ class AdminProductController extends Controller
     /**
      * Update an existing product.
      */
-    public function update(Request $request, Product $product, UpdateProductAction $updateProductAction): RedirectResponse
-    {
+    public function update(
+        Request $request,
+        Product $product,
+        UpdateProductAction $updateProductAction,
+        UploadProductImageAction $uploadProductImageAction
+    ): RedirectResponse {
         if (! $request->filled('slug') && $request->filled('name')) {
             $request->merge(['slug' => Str::slug($request->string('name')->value())]);
         }
@@ -152,6 +198,9 @@ class AdminProductController extends Controller
             'published_at' => ['nullable', 'date'],
             'fabric' => ['nullable', 'string', 'max:100'],
             'occasion' => ['nullable', 'string', 'max:100'],
+            'primary_image_file' => ['nullable', 'file', 'image', 'mimes:jpeg,png,webp,gif,svg,avif', 'max:10240'],
+            'primary_image_url' => ['nullable', 'url', 'max:2000'],
+            'primary_image_alt' => ['nullable', 'string', 'max:255'],
         ]);
 
         $baseAttributes = $product->base_attributes ?? [];
@@ -166,6 +215,20 @@ class AdminProductController extends Controller
         $validated['base_attributes'] = array_filter($baseAttributes);
 
         $updateProductAction->execute($product, $validated);
+
+        if ($request->hasFile('primary_image_file') || $request->filled('primary_image_url')) {
+            $uploadProductImageAction->execute(
+                $product,
+                [
+                    'image_role' => ImageRole::Thumbnail,
+                    'alt_text' => $request->input('primary_image_alt') ?: $product->name,
+                    'cdn_url' => $request->input('primary_image_url'),
+                    'is_primary' => true,
+                    'sort_order' => 1,
+                ],
+                $request->file('primary_image_file')
+            );
+        }
 
         return redirect()
             ->route('admin.products.show', $product)

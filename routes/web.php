@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\CatalogHubController;
 use App\Http\Controllers\Admin\HeroSectionController;
+use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\CustomerAuthController;
@@ -113,6 +114,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Products CRUD
         Route::resource('products', AdminProductController::class);
+
+        // Product Media & Image Management
+        Route::post('products/{product}/images', [ProductImageController::class, 'store'])
+            ->name('products.images.store');
+        Route::patch('products/{product}/images/{productImage}/primary', [ProductImageController::class, 'setPrimary'])
+            ->name('products.images.primary');
+        Route::delete('products/{product}/images/{productImage}', [ProductImageController::class, 'destroy'])
+            ->name('products.images.destroy');
 
         Route::post('/logout', [AdminAuthController::class, 'logout'])
             ->name('logout');

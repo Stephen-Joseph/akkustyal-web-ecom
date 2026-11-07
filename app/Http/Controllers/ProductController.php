@@ -10,7 +10,14 @@ class ProductController extends Controller
 {
     public function index(Request $request): View
     {
-        $products = Product::with(['categories', 'brand', 'variants.prices', 'variants.inventoryLevels'])
+        $products = Product::with([
+            'categories',
+            'brand',
+            'images',
+            'variants.prices',
+            'variants.inventoryLevels',
+            'variants.images',
+        ])
             ->active()
             ->when($request->category, fn ($q) => $q->whereHas(
                 'categories',
@@ -31,8 +38,10 @@ class ProductController extends Controller
         $product = Product::with([
             'categories',
             'brand',
+            'images',
             'variants.prices',
             'variants.inventoryLevels',
+            'variants.images',
             'reviews.customer',
         ])
             ->active()

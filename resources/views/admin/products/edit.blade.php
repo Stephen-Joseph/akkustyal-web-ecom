@@ -29,7 +29,7 @@
     </div>
   @endif
 
-  <form method="POST" action="{{ route('admin.products.update', $product) }}">
+  <form method="POST" action="{{ route('admin.products.update', $product) }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -194,6 +194,71 @@
             class="form-input-text"
           />
         </div>
+      </div>
+    </div>
+
+    <!-- Product Imagery & Media Panel -->
+    <div class="form-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <div>
+          <h2 class="form-panel-title">Product Imagery</h2>
+          <p class="form-panel-desc" style="margin: 0;">Update primary image asset or manage the full visual gallery.</p>
+        </div>
+        <a href="{{ route('admin.products.show', $product) }}" class="btn btn-secondary" style="font-size: 12px; padding: 6px 14px;">
+          Manage All Media Assets &rarr;
+        </a>
+      </div>
+
+      @if ($product->primary_image)
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 18px; padding: 12px; background: var(--bg-canvas); border-radius: 12px;">
+          <img
+            src="{{ $product->primary_image }}"
+            alt="{{ $product->name }}"
+            style="width: 64px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color);"
+          />
+          <div>
+            <div style="font-size: 13px; font-weight: 600; color: var(--text-main);">Current Primary Image</div>
+            <div style="font-size: 11px; color: var(--text-muted); word-break: break-all;">{{ $product->primary_image }}</div>
+          </div>
+        </div>
+      @endif
+
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="primary_image_file" class="form-label">Upload New Primary Image</label>
+          <input
+            type="file"
+            id="primary_image_file"
+            name="primary_image_file"
+            accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif"
+            class="form-input-text"
+            style="padding: 7px 12px;"
+          />
+          <span class="form-help">Overwrites or sets the primary image.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="primary_image_url" class="form-label">OR External Image CDN URL</label>
+          <input
+            type="url"
+            id="primary_image_url"
+            name="primary_image_url"
+            placeholder="https://images.unsplash.com/... or https://cdn.example.com/..."
+            class="form-input-text"
+          />
+          <span class="form-help">Cloudinary, S3, or Unsplash direct URL.</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 10px;">
+        <label for="primary_image_alt" class="form-label">Image Alt Description</label>
+        <input
+          type="text"
+          id="primary_image_alt"
+          name="primary_image_alt"
+          placeholder="e.g. {{ $product->name }} front angle"
+          class="form-input-text"
+        />
       </div>
     </div>
 

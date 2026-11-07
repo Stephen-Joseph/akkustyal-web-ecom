@@ -15,10 +15,12 @@ export default defineConfig({
                 'resources/css/admin/login.css',
                 'resources/css/admin/settings.css',
                 'resources/css/admin/catalog.css',
+                'resources/css/admin/components.css',
                 'resources/js/admin/common.js',
                 'resources/js/admin/layout.js',
                 'resources/js/admin/dashboard.js',
                 'resources/js/admin/login.js',
+                'resources/js/admin/components.js',
             ],
             refresh: true,
             fonts: [

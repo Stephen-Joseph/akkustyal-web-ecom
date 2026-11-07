@@ -29,7 +29,7 @@
     </div>
   @endif
 
-  <form method="POST" action="{{ route('admin.products.store') }}">
+  <form method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data">
     @csrf
 
     <!-- General Info Panel -->
@@ -188,6 +188,52 @@
             class="form-input-text"
           />
         </div>
+      </div>
+    </div>
+
+    <!-- Product Imagery / Primary Visual Panel -->
+    <div class="form-panel">
+      <h2 class="form-panel-title">Product Imagery (Primary Visual)</h2>
+      <p class="form-panel-desc">Provide an initial primary hero image via upload or external CDN URL (optional).</p>
+
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="primary_image_file" class="form-label">Upload Image File</label>
+          <input
+            type="file"
+            id="primary_image_file"
+            name="primary_image_file"
+            accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif"
+            class="form-input-text"
+            style="padding: 7px 12px;"
+          />
+          <span class="form-help">Supported formats: WebP, JPG, PNG &lt; 10MB.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="primary_image_url" class="form-label">OR Image CDN URL</label>
+          <input
+            type="url"
+            id="primary_image_url"
+            name="primary_image_url"
+            value="{{ old('primary_image_url') }}"
+            placeholder="https://images.unsplash.com/... or https://cdn.example.com/..."
+            class="form-input-text"
+          />
+          <span class="form-help">Direct link to an asset hosted on CDN or Cloudinary.</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 10px;">
+        <label for="primary_image_alt" class="form-label">Image Alt Description</label>
+        <input
+          type="text"
+          id="primary_image_alt"
+          name="primary_image_alt"
+          value="{{ old('primary_image_alt') }}"
+          placeholder="e.g. Classic cotton kurta front view on model"
+          class="form-input-text"
+        />
       </div>
     </div>
 
